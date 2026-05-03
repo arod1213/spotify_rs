@@ -3,11 +3,11 @@ use std::error::Error;
 use crate::spotify::{
     album::{self, Album},
     auth::{self, Auth},
-    search,
+    search::{self, SearchInput},
     track::{self, Track},
 };
 
-mod spotify;
+pub mod spotify;
 
 pub struct Spotify {
     pub auth: Auth,
@@ -18,8 +18,8 @@ impl Spotify {
         Ok(Self { auth })
     }
 
-    pub async fn search(&self, title: &str, artist: &str) -> Result<Vec<Track>, Box<dyn Error>> {
-        search::find_track(&self.auth, title, artist).await
+    pub async fn search(&self, q: Vec<SearchInput>) -> Result<Vec<Track>, Box<dyn Error>> {
+        search::find_track(&self.auth, q).await
     }
 
     pub async fn album(&self, id: &str) -> Result<Album, Box<dyn Error>> {
