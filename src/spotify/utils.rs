@@ -1,7 +1,8 @@
 use std::error::Error;
 
+use chrono::NaiveDate;
 use reqwest::{Client, IntoUrl, header::AUTHORIZATION};
-use serde::de::DeserializeOwned;
+use serde::{Deserialize, Deserializer, de::DeserializeOwned};
 
 use crate::spotify::auth::Auth;
 
@@ -26,4 +27,21 @@ where
 
     let data: T = res.json().await?;
     Ok(data)
+}
+
+pub fn deserialize_date<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+
+    let fmts = ["%Y-%m-%d", "%Y-%m", "%Y"];
+    let date = fmts
+        .iter()
+        .find_map(|fmt| NaiveDate::parse_from_str(&s, fmt).ok());
+
+    match date {
+        Some(s) => Ok(s),
+        None => Err(serde::de::Error::custom("invalid date")),
+    }
 }

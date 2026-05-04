@@ -4,7 +4,10 @@ use chrono::NaiveDate;
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
-use crate::spotify::{auth::Auth, utils};
+use crate::spotify::{
+    auth::Auth,
+    utils::{self, deserialize_date},
+};
 
 pub async fn get_track(id: &str, auth: &Auth) -> Result<Track, Box<dyn Error>> {
     let base = Url::parse("https://api.spotify.com/v1/tracks/")?;
@@ -16,6 +19,7 @@ pub async fn get_track(id: &str, auth: &Auth) -> Result<Track, Box<dyn Error>> {
 pub struct TrackAlbum {
     pub id: String,
     pub name: String,
+    #[serde(deserialize_with = "deserialize_date")]
     pub release_date: NaiveDate,
 }
 

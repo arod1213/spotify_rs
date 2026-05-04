@@ -4,7 +4,10 @@ use chrono::NaiveDate;
 use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
-use crate::spotify::{auth::Auth, utils};
+use crate::spotify::{
+    auth::Auth,
+    utils::{self, deserialize_date},
+};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AlbumMeta {
@@ -16,6 +19,8 @@ pub struct Album {
     pub id: String,
     pub name: String,
     pub label: String,
+
+    #[serde(deserialize_with = "deserialize_date")]
     pub release_date: NaiveDate,
     pub external_ids: AlbumMeta,
 }
