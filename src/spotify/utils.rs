@@ -42,6 +42,10 @@ where
 
     match date {
         Some(s) => Ok(s),
-        None => Err(serde::de::Error::custom("invalid date")),
+        None => {
+            let err_msg = format!("{} is not a valid date", s);
+            eprintln!("{}", err_msg);
+            Err(serde::de::Error::custom(err_msg))
+        }
     }
 }
