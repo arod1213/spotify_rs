@@ -36,9 +36,12 @@ where
     let s = String::deserialize(deserializer)?;
 
     let fmts = ["%Y-%m-%d", "%Y-%m", "%Y"];
-    let date = fmts
-        .iter()
-        .find_map(|fmt| NaiveDate::parse_from_str(&s, fmt).ok());
+    let date = fmts.iter().find_map(|fmt| match *fmt {
+        "%Y-%m-%d" => NaiveDate::parse_from_str(&s, fmt).ok(),
+        "%Y-%m" => NaiveDate::parse_from_str(&format!("{}-01", s), "%Y-%m-%d").ok(),
+        "%Y" => NaiveDate::parse_from_str(&format!("{}-01-01", s), "%Y-%m-%d").ok(),
+        _ => None,
+    });
 
     match date {
         Some(s) => Ok(s),
