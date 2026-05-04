@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use reqwest::Url;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::spotify::{auth::Auth, track::Track, utils::fetch_model};
 
@@ -33,6 +33,7 @@ pub async fn find_track(auth: &Auth, q: Vec<SearchInput>) -> Result<Vec<Track>, 
     Ok(results.tracks.items)
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub enum SearchInput {
     Isrc(String),
     Track(String),
