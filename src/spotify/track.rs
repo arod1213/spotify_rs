@@ -31,7 +31,7 @@ pub struct Artist {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TrackMeta {
     pub upc: Option<String>,
-    pub isrc: String,
+    pub isrc: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
