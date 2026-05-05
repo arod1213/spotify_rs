@@ -34,6 +34,7 @@ pub async fn find_track(auth: &Auth, q: Vec<SearchInput>) -> Result<Vec<Track>, 
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum SearchInput {
     Isrc(String),
     Track(String),
