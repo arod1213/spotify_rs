@@ -18,8 +18,12 @@ impl Spotify {
         Ok(Self { auth })
     }
 
-    pub async fn search(&self, q: Vec<SearchInput>) -> Result<Vec<Track>, Box<dyn Error>> {
-        search::find_track(&self.auth, q).await
+    pub async fn search(
+        &self,
+        q: Vec<SearchInput>,
+        limit: usize,
+    ) -> Result<Vec<Track>, Box<dyn Error>> {
+        search::find_track(&self.auth, q, limit).await
     }
 
     pub async fn album(&self, id: &str) -> Result<Album, Box<dyn Error>> {

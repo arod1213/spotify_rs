@@ -15,7 +15,11 @@ pub struct SearchResults {
     pub tracks: Items,
 }
 
-pub async fn find_track(auth: &Auth, q: Vec<SearchInput>) -> Result<Vec<Track>, Box<dyn Error>> {
+pub async fn find_track(
+    auth: &Auth,
+    q: Vec<SearchInput>,
+    limit: usize,
+) -> Result<Vec<Track>, Box<dyn Error>> {
     let mut href = Url::parse("https://api.spotify.com/v1/search")?;
 
     let query_text = q
@@ -27,7 +31,7 @@ pub async fn find_track(auth: &Auth, q: Vec<SearchInput>) -> Result<Vec<Track>, 
         let mut query = href.query_pairs_mut();
         query.append_pair("q", &query_text);
         query.append_pair("type", "track");
-        query.append_pair("limit", "5");
+        query.append_pair("limit", &limit.to_string());
     }
 
     let results = fetch_model::<SearchResults, _>(href, auth).await?;
