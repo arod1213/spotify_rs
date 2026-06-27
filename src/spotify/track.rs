@@ -15,7 +15,7 @@ pub async fn get_track(id: &str, auth: &Auth) -> Result<Track, Box<dyn Error>> {
     utils::fetch_model::<Track, _>(href, auth).await
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TrackAlbum {
     pub id: String,
     pub name: String,
@@ -23,18 +23,18 @@ pub struct TrackAlbum {
     pub release_date: NaiveDate,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Artist {
     pub name: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TrackMeta {
     pub upc: Option<String>,
     pub isrc: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Track {
     pub id: String,
     pub name: String,
