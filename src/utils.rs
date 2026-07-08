@@ -4,15 +4,13 @@ use chrono::NaiveDate;
 use reqwest::{Client, IntoUrl, header::AUTHORIZATION};
 use serde::{Deserialize, Deserializer, de::DeserializeOwned};
 
-use crate::spotify::auth::Auth;
+use crate::auth::Auth;
 
-pub async fn fetch_model<T, U>(href: U, auth: &Auth) -> Result<T, Box<dyn Error>>
+pub async fn fetch_model<T, U>(href: U, auth: &Auth, client: Client) -> Result<T, Box<dyn Error>>
 where
     T: DeserializeOwned,
     U: IntoUrl,
 {
-    let client = Client::new();
-
     let bearer = format!("Bearer {}", auth.access_token);
     let res = client
         .get(href)

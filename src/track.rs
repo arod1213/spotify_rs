@@ -1,19 +1,9 @@
-use std::{error::Error, fmt::Display};
+use std::fmt::Display;
 
 use chrono::NaiveDate;
-use reqwest::Url;
 use serde::{Deserialize, Serialize};
 
-use crate::spotify::{
-    auth::Auth,
-    utils::{self, deserialize_date},
-};
-
-pub async fn get_track(id: &str, auth: &Auth) -> Result<Track, Box<dyn Error>> {
-    let base = Url::parse("https://api.spotify.com/v1/tracks/")?;
-    let href = base.join(id)?;
-    utils::fetch_model::<Track, _>(href, auth).await
-}
+use crate::{album::Album, utils::deserialize_date};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TrackAlbum {
@@ -57,5 +47,28 @@ impl Display for Track {
             "{} by {} on {}",
             self.name, artist_names, self.album.name
         )
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct TrackDetail {
+    pub id: String,
+    pub name: String,
+    pub duration_ms: u32,
+    pub album: Album,
+    pub artists: Vec<Artist>,
+    pub external_ids: TrackMeta,
+}
+
+impl TrackDetail {
+    pub fn from_track(track: Track, album: Album) -> Self {
+        Self {
+            id: track.id,
+            name: track.name,
+            duration_ms: track.duration_ms,
+            album,
+            artists: track.artists,
+            external_ids: track.external_ids,
+        }
     }
 }
