@@ -82,10 +82,10 @@ impl Spotify {
         for artist_album in artist_albums {
             let album = self.album(&artist_album.id).await?;
             let album_tracks = self.album_tracks(&artist_album.id, 20).await?;
-            for track in album_tracks {
-                let t = self.track(&track.id).await?;
-                let t_detail = TrackDetail::from_track(t, album.clone());
-                all_tracks.push(t_detail);
+            for album_track in album_tracks {
+                let track = self.track(&album_track.id).await?;
+                let track_detail = TrackDetail::from_track(track, album.clone());
+                all_tracks.push(track_detail);
             }
         }
         Ok(all_tracks)
