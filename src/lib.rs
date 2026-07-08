@@ -51,7 +51,6 @@ impl Spotify {
             query.append_pair("include_groups", &include_str);
             query.append_pair("limit", &limit.to_string());
         }
-        dbg!(&href);
         let results =
             fetch_model::<ArtistAlbumRes, _>(href, &self.auth, self.client.clone()).await?;
         Ok(results.items)
