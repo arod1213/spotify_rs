@@ -73,11 +73,15 @@ impl Spotify {
         Ok(results.items)
     }
 
-    pub async fn artist_tracks(&self, artist_id: &str) -> Result<Vec<TrackDetail>, Box<dyn Error>> {
+    pub async fn artist_tracks(
+        &self,
+        artist_id: &str,
+        include_groups: &[IncludeGroup],
+    ) -> Result<Vec<TrackDetail>, Box<dyn Error>> {
         let mut all_tracks = vec![];
 
         let artist_albums = self
-            .get_artist_albums(artist_id, &[IncludeGroup::Album], 10)
+            .get_artist_albums(artist_id, include_groups, 10)
             .await?;
         for artist_album in artist_albums {
             let album = self.album(&artist_album.id).await?;
