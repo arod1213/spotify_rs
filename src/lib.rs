@@ -1,11 +1,13 @@
 use std::error::Error;
 
 use reqwest::{Client, Url};
+use serde::{Deserialize, Serialize};
 
 use crate::{
     album::{Album, AlbumTrack, AlbumTracks},
     artist::{ArtistAlbum, ArtistAlbumRes, IncludeGroup},
     auth::Auth,
+    playlist::{PlaylistItem, PlaylistRes},
     search::{SearchInput, SearchResults},
     track::{Track, TrackDetail},
     utils::fetch_model,
@@ -14,6 +16,7 @@ use crate::{
 pub mod album;
 pub mod artist;
 mod auth;
+mod playlist;
 pub mod search;
 pub mod track;
 mod utils;
@@ -70,6 +73,23 @@ impl Spotify {
         }
         let results = fetch_model::<AlbumTracks, _>(href, &self.auth, self.client.clone()).await?;
         Ok(results.items)
+    }
+
+    pub async fn playlist_tracks(
+        &self,
+        playlist_id: &str,
+        limit: usize,
+    ) -> Result<Vec<PlaylistItem>, Box<dyn Error>> {
+        let mut href = Url::parse(&format!(
+            "https://api.spotify.com/v1/playlists/{playlist_id}/items"
+        ))?;
+        {
+            let mut query = href.query_pairs_mut();
+            query.append_pair("limit", &limit.to_string());
+        }
+        let results = fetch_model::<PlaylistRes, _>(href, &self.auth, self.client.clone()).await?;
+        let items: Vec<PlaylistItem> = results.items.into_iter().map(|i| i.item).collect();
+        Ok(items)
     }
 
     pub async fn artist_tracks(
